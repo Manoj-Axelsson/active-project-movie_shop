@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 import { MovieCard } from "@/components/movie/movie-card";
-// Test comment 2
+
 
 async function getTopLists() {
   const [topPurchased, newest, oldest, cheapest] = await Promise.all([

@@ -11,6 +11,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  
  }
 
  // ─────────────────────────────────────────
@@ -26,7 +27,7 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  role          String?
+  role          String? @default("USER")  // e.g., ADMIN, USER
   banned        Boolean?  @default(false)
   banReason     String?
   banExpires    DateTime?
@@ -117,7 +118,7 @@ model Address {
 
 model Movie {
   id          String   @id @default(uuid())
-  title       String
+  title       String  @unique
   description String
   price       Decimal
   releaseDate DateTime
@@ -139,7 +140,7 @@ model Movie {
 
 model Genre {
   id          String  @id @default(uuid())
-  name        String
+  name        String  @unique
   description String?
 
   movies Movie[] // implicit m:n
@@ -149,7 +150,7 @@ model Genre {
 
 model MoviePerson {
   id   String @id @default(uuid())
-  name String
+  name String @unique
   role String
 
   movies Movie[] // implicit m:n

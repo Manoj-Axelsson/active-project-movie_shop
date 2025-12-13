@@ -1,7 +1,5 @@
 import { betterAuth } from "better-auth";
 
-
-
 type VerificationRequestOptions = {
   identifier: string;
   url: string;
@@ -12,7 +10,15 @@ export const auth = betterAuth({
   database: {
     provider: "postgres",
     url: process.env.DATABASE_URL!,
+    adapter: {
+      user: {
+        fields: {
+          role: true,
+        },
+      },
+    },
   },
+
   email: {
     async sendVerificationRequest(options: VerificationRequestOptions) {
       const { identifier, url, expiresAt } = options;
@@ -23,5 +29,9 @@ export const auth = betterAuth({
     },
   },
 });
+
+export async function getSession() {
+  return auth.api.getSession();
+}
 
 export const handler = auth.handler;
