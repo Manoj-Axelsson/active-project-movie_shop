@@ -1,12 +1,12 @@
-import { auth } from '@/app/lib/auth';
-import { prisma } from '@/app/lib/prisma';
+import { getSession } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export default async function OrdersPage({
     searchParams,
 }: {
     searchParams: { orderId?: string };
 }) {
-    const session = await auth.getSession();
+    const session = await getSession();
     if (!session?.user) {
         return <p>Please log in to see your orders.</p>;
     }
