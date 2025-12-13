@@ -1,12 +1,12 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { movieSchema } from '@/app/lib/validation';
-import { prisma } from '@/app/lib/prisma';
-import { auth } from '@/app/lib/auth';
+import { movieSchema } from '@/lib/validation';
+import { prisma } from '@/lib/prisma';
+import { auth, getSession } from '@/lib/auth';
 
 async function requireAdmin() {
-    const session = await auth.getSession();
+    const session = await getSession();
     if (!session?.user || session.user.role !== 'admin') {
         throw new Error('Not authorized');
     }

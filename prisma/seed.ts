@@ -1,16 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
 
-// Create adapter for pg driver
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
-
 // Prisma client
-const prisma = new PrismaClient({
-  adapter,
-});
+const prisma = new PrismaClient();
 
 async function main() {
   console.log(" Starting to seed...");
@@ -324,13 +316,33 @@ async function main() {
   console.log(`Inserting movies...`);
 
   for (const movie of movies) {
-    await prisma.movie.create({
-      data: {
+    // Generate a placeholder image if the URL is an example one to ensure it renders in the UI
+    const finalImageUrl = movie.imageUrl.includes("example.com")
+      ? `https://placehold.co/600x400?text=${encodeURIComponent(movie.title)}`
+      : movie.imageUrl;
+
+    await prisma.movie.upsert({
+      where: { title: movie.title },
+      update: {
+        // Update fields if needed, or leave empty if you want to preserve existing data
+        description: movie.description,
+        price: movie.price,
+        releaseDate: new Date(movie.releaseDate),
+        imageUrl: finalImageUrl,
+        runtime: movie.runtime,
+        genres: {
+          connect: movie.genres.map((g) => ({ name: g })),
+        },
+        moviePersons: {
+          connect: movie.people.map((p) => ({ name: p })),
+        }
+      },
+      create: {
         title: movie.title,
         description: movie.description,
         price: movie.price,
         releaseDate: new Date(movie.releaseDate),
-        imageUrl: movie.imageUrl,
+        imageUrl: finalImageUrl,
         runtime: movie.runtime,
 
         genres: {
@@ -348,3 +360,13 @@ async function main() {
 
   console.log("Seeding completed.");
 }
+
+main()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })

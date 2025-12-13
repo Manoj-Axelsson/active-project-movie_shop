@@ -7,7 +7,7 @@ export default async function AdminDashboard() {
     return <p>Access denied.</p>;
   }
 
- 
+
   const dbUser = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { role: true },
@@ -44,13 +44,13 @@ export default async function AdminDashboard() {
       <h1 className="text-xl font-semibold mb-2">Admin dashboard</h1>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="border border-slate-800 rounded p-3">
-          <div className="text-xs text-slate-400 mb-1">Total orders</div>
+        <div className="bg-white border border-slate-200 rounded p-3 shadow-sm">
+          <div className="text-xs text-slate-500 mb-1">Total orders</div>
           <div className="text-2xl font-bold">{totalOrders}</div>
         </div>
 
-        <div className="border border-slate-800 rounded p-3">
-          <div className="text-xs text-slate-400 mb-1">
+        <div className="bg-white border border-slate-200 rounded p-3 shadow-sm">
+          <div className="text-xs text-slate-500 mb-1">
             Total revenue (simulated)
           </div>
           <div className="text-2xl font-bold">

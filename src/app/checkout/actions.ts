@@ -2,10 +2,10 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { auth } from '@/app/lib/auth';
-import { prisma } from '@/app/lib/prisma';
-import { getCartFromStore, cartTotal } from '@/app/lib/cart';
-import { addressSchema } from '@/app/lib/validation';
+import { auth, getSession } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import { getCartFromStore, cartTotal } from '@/lib/cart';
+import { addressSchema } from '@/lib/validation';
 import { cookies } from 'next/headers';
 
 const checkoutInputSchema = z.object({
@@ -15,8 +15,8 @@ const checkoutInputSchema = z.object({
     country: z.string(),
 });
 
-export async function performCheckout(prev: any, formData: FormData) {
-    const session = await auth.getSession();
+export async function performCheckout(prevState: any, formData: FormData) {
+    const session = await getSession();
     if (!session?.user) {
         return { success: false, error: 'You must be logged in to checkout.' };
     }

@@ -7,7 +7,13 @@ module.exports = {
     "./src/styles/**/*.css",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        gold: {
+          matt: '#EFDBB2',
+        },
+      },
+    },
   },
   plugins: [
     require("tailwindcss-animate"),

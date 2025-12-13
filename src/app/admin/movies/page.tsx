@@ -1,4 +1,4 @@
-import { prisma } from '@/app/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { MovieCard } from '@/components/movie/movie-card';
 
@@ -35,17 +35,22 @@ export default async function MoviesPage({
 }: {
     searchParams: SearchParams;
 }) {
-    const [movies, genres, people] = await Promise.all([
+    const [rawMovies, genres, people] = await Promise.all([
         getMovies(searchParams),
         prisma.genre.findMany({ orderBy: { name: 'asc' } }),
         prisma.moviePerson.findMany({ orderBy: { name: 'asc' } }),
     ]);
 
+    const movies = rawMovies.map((movie) => ({
+        ...movie,
+        price: Number(movie.price),
+    }));
+
     return (
         <div className="space-y-4">
             <form className="flex flex-wrap gap-2 mb-4">
                 <input
-                    className="px-3 py-2 rounded bg-slate-900 border border-slate-700 text-sm flex-1 min-w-[200px]"
+                    className="px-3 py-2 rounded bg-white border border-slate-300 text-sm flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     name="search"
                     placeholder="Search by title…"
                     defaultValue={searchParams.search ?? ''}
@@ -53,7 +58,7 @@ export default async function MoviesPage({
                 <select
                     name="genreId"
                     defaultValue={searchParams.genreId ?? ''}
-                    className="px-3 py-2 rounded bg-slate-900 border border-slate-700 text-sm"
+                    className="px-3 py-2 rounded bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                     <option value="">All genres</option>
                     {genres.map((g) => (
@@ -65,7 +70,7 @@ export default async function MoviesPage({
                 <select
                     name="personId"
                     defaultValue={searchParams.personId ?? ''}
-                    className="px-3 py-2 rounded bg-slate-900 border border-slate-700 text-sm"
+                    className="px-3 py-2 rounded bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                     <option value="">All people</option>
                     {people.map((p) => (
@@ -76,7 +81,7 @@ export default async function MoviesPage({
                 </select>
                 <button
                     type="submit"
-                    className="px-3 py-2 rounded bg-emerald-600 text-sm"
+                    className="px-3 py-2 rounded bg-emerald-600 text-white text-sm hover:bg-emerald-500"
                 >
                     Apply
                 </button>

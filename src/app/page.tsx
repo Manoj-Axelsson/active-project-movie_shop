@@ -27,7 +27,14 @@ async function getTopLists() {
     }),
   ]);
 
-  return { topPurchased, newest, oldest, cheapest };
+  const normalize = (list: any[]) => list.map(m => ({ ...m, price: Number(m.price) }));
+
+  return {
+    topPurchased: normalize(topPurchased),
+    newest: normalize(newest),
+    oldest: normalize(oldest),
+    cheapest: normalize(cheapest),
+  };
 }
 
 export default async function HomePage() {

@@ -50,7 +50,7 @@ const updateSchema = z.object({
   quantity: z.coerce.number().int().min(0),
 });
 
-export async function updateCartItem(prev: any, formData: FormData) {
+export async function updateCartItem(prevState: any, formData: FormData) {
   const parsed = updateSchema.safeParse({
     movieId: formData.get("movieId"),
     quantity: formData.get("quantity"),
@@ -71,7 +71,7 @@ const removeSchema = z.object({
   movieId: z.string().uuid(),
 });
 
-export async function removeFromCart(prev: any, formData: FormData) {
+export async function removeFromCart(prevState: any, formData: FormData) {
   const parsed = removeSchema.safeParse({
     movieId: formData.get("movieId"),
   });
