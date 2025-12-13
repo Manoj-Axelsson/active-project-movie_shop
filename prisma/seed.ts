@@ -72,7 +72,6 @@ async function main() {
 
   console.log(`Seeded initial people: ${personRecords.length}`);
 
-
   // ------------------------------------------
   // 3. MOVIE DATA
   // ------------------------------------------
@@ -132,7 +131,8 @@ async function main() {
     },
     {
       title: "The Godfather",
-      description: "The rise and legacy of a powerful Italian-American crime family.",
+      description:
+        "The rise and legacy of a powerful Italian-American crime family.",
       price: 159.0,
       releaseDate: "1972-03-24",
       imageUrl: "https://example.com/godfather.jpg",
@@ -172,7 +172,8 @@ async function main() {
     },
     {
       title: "Fight Club",
-      description: "An underground movement challenges modern consumer identity.",
+      description:
+        "An underground movement challenges modern consumer identity.",
       price: 139.0,
       releaseDate: "1999-10-15",
       imageUrl: "https://example.com/fight-club.jpg",
@@ -202,7 +203,8 @@ async function main() {
     },
     {
       title: "City of God",
-      description: "Two boys take different paths amid crime in Rio de Janeiro.",
+      description:
+        "Two boys take different paths amid crime in Rio de Janeiro.",
       price: 129.0,
       releaseDate: "2002-08-30",
       imageUrl: "https://example.com/city-of-god.jpg",
@@ -232,7 +234,8 @@ async function main() {
     },
     {
       title: "Parasite",
-      description: "Class conflict erupts between two families in modern Korea.",
+      description:
+        "Class conflict erupts between two families in modern Korea.",
       price: 159.0,
       releaseDate: "2019-05-30",
       imageUrl: "https://example.com/parasite.jpg",
@@ -308,7 +311,6 @@ async function main() {
 
   console.log(`Auto-added people referenced in movies: ${autoPeople.size}`);
 
-
   // ------------------------------------------
   // 5. INSERT MOVIES WITH RELATIONS
   // ------------------------------------------
@@ -335,7 +337,7 @@ async function main() {
         },
         moviePersons: {
           connect: movie.people.map((p) => ({ name: p })),
-        }
+        },
       },
       create: {
         title: movie.title,
@@ -363,10 +365,10 @@ async function main() {
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
