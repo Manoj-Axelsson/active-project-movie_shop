@@ -1,59 +1,42 @@
-import { prisma } from '@/lib/prisma';
-import { movieSchema } from '@/lib/validation';
-import { redirect } from 'next/navigation';
+"use server";
 
-export async function updateMovie(prev: any, formData: FormData) {
-    await requireAdmin();
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
-    const parsed = movieSchema
-        .extend({ id: movieSchema.shape.id.unwrap() })
-        .safeParse({
-            id: formData.get('id'),
-            title: formData.get('title'),
-            description: formData.get('description'),
-            price: formData.get('price'),
-            releaseDate: formData.get('releaseDate'),
-            imageUrl: formData.get('imageUrl'),
-            runtime: formData.get('runtime'),
-            stock: formData.get('stock'),
-            genreIds: formData.getAll('genreIds'),
-            personIds: formData.getAll('personIds'),
-        });
+export async function updateMovie(formData: FormData) {
+  const id = formData.get("id") as string;
+  if (!id) {
+    throw new Error("Missing movie ID");
+  }
 
-    if (!parsed.success) return { success: false, error: 'Invalid input' };
+  const title = formData.get("title") as string;
+  const description = formData.get("description") as string;
+  const imageUrl = formData.get("imageUrl") as string;
+  const runtimeRaw = formData.get("runtime") as string;
+  const priceRaw = formData.get("price") as string;
+  const stockRaw = formData.get("stock") as string;
+  const releaseDateRaw = formData.get("releaseDate") as string;
 
-    const { id, genreIds, personIds, ...data } = parsed.data;
+  const runtime =
+    runtimeRaw && !isNaN(Number(runtimeRaw)) ? Number(runtimeRaw) : null;
 
-    await prisma.movie.update({
-        where: { id },
-        data: {
-            ...data,
-            genres: genreIds
-                ? {
-                    set: [],
-                    connect: genreIds.map((gid: any) => ({ id: gid })),
-                }
-                : undefined,
-            moviePersons: personIds
-                ? {
-                    set: [],
-                    connect: personIds.map((pid: any) => ({ id: pid })),
-                }
-                : undefined,
-        },
-    });
+  const price = Number(priceRaw);
+  const stock = Number(stockRaw);
+  const releaseDate = new Date(releaseDateRaw);
 
-    redirect('/admin/movies');
+  // ---------- UPDATE MOVIE ----------
+  await prisma.movie.update({
+    where: { id },
+    data: {
+      title,
+      description,
+      imageUrl,
+      runtime,
+      price,
+      stock,
+      releaseDate,
+    },
+  });
+
+  redirect("/admin/movies");
 }
-
-export async function softDeleteMovie(id: string) {
-    await requireAdmin();
-    await prisma.movie.update({
-        where: { id },
-        data: { deleted: true },
-    });
-}
-function requireAdmin() {
-    throw new Error('Function not implemented.');
-}
-

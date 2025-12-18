@@ -119,7 +119,7 @@ model Movie {
   id          String   @id @default(uuid())
   title       String
   description String
-  price       Decimal
+  price       Int
   releaseDate DateTime
   imageUrl    String
   runtime     Int?
@@ -139,7 +139,7 @@ model Movie {
 
 model Genre {
   id          String  @id @default(uuid())
-  name        String
+  name        String @unique
   description String?
 
   movies Movie[] // implicit m:n
